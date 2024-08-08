@@ -1,0 +1,24 @@
+load("@rules_go//go:def.bzl", "go_test")
+load("//gotemplate:def.bzl", "go_template")
+
+go_template(
+    name = "in",
+    testonly = True,
+    params = {
+        "Package": "example",
+    },
+    template = "in.tmpl",
+)
+
+go_test(
+    name = "test",
+    size = "small",
+    srcs = [
+        "test.go",
+        ":in",
+    ],
+    data = [
+        "out.go",
+        ":in",
+    ],
+)
