@@ -11,12 +11,12 @@ import (
 var (
 	templateFile string
 	outputFile   string
-	params       string
+	args         string
 )
 
 func main() {
 	flag.StringVar(&templateFile, "template", "", "Template file")
-	flag.StringVar(&params, "params", "", "Template parameters")
+	flag.StringVar(&args, "args", "", "Template arguments as JSON")
 	flag.StringVar(&outputFile, "out", "", "Output file")
 	flag.Parse()
 
@@ -28,8 +28,8 @@ func main() {
 
 func render() error {
 	data := make(map[string]any)
-	if err := json.Unmarshal([]byte(params), &data); err != nil {
-		return fmt.Errorf("failed to unmarshal params: %v", err)
+	if err := json.Unmarshal([]byte(args), &data); err != nil {
+		return fmt.Errorf("failed to unmarshal args: %v", err)
 	}
 
 	b, err := os.ReadFile(templateFile)

@@ -1,10 +1,10 @@
 load("@rules_go//go:def.bzl", "go_context")
 
 def _get_gofmt(go_ctx):
-  for tool in go_ctx.sdk.tools:
-      if tool.basename == "gofmt":
-          return tool
-  return None
+    for tool in go_ctx.sdk.tools:
+        if tool.basename == "gofmt":
+            return tool
+    return None
 
 def _go_template_impl(ctx):
     orig = ctx.actions.declare_file(ctx.attr.name + "_orig.go")
@@ -14,8 +14,8 @@ def _go_template_impl(ctx):
     args.add_all([
         "--template",
         ctx.file.template,
-        "--params",
-        dict(ctx.attr.params), # JSON
+        "--args",
+        ctx.attr.json_args if ctx.attr.json_args else dict(ctx.attr.args),
         "--out",
         orig,
     ])
@@ -51,11 +51,15 @@ go_template = rule(
     implementation = _go_template_impl,
     attrs = {
         "template": attr.label(
+            doc = "Go template file",
             mandatory = True,
             allow_single_file = True,
         ),
-        "params": attr.string_dict(
-            mandatory = True,
+        "args": attr.string_dict(
+            doc = "Template args",
+        ),
+        "json_args": attr.string(
+            doc = "Template args in JSON format. If provided, overrides args attr.",
         ),
         "_gotemplate": attr.label(
             default = ":gotemplate",

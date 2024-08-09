@@ -1,0 +1,16 @@
+{{/* Extra new lines and spaces will be fixed by gofmt */}}
+
+package example
+
+
+
+const (
+{{ range $i, $code := .Codes -}}
+	code{{ $i }} = "{{ $code }}"
+{{ end }}
+)
+
+
+func Bar() string {
+		return "{{ .Bar.Name }}"
+}

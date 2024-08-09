@@ -2,12 +2,19 @@ load("@rules_go//go:def.bzl", "go_test")
 load("//gotemplate:def.bzl", "go_template")
 
 go_template(
-    name = "in",
+    name = "foo",
     testonly = True,
-    params = {
+    args = {
         "Package": "example",
     },
-    template = "in.tmpl",
+    template = "foo.tmpl",
+)
+
+go_template(
+    name = "bar",
+    testonly = True,
+    json_args ="""{"Codes":["red","blue"], "Bar":{"Name":"bar"}}""",
+    template = "bar.tmpl",
 )
 
 go_test(
@@ -15,10 +22,13 @@ go_test(
     size = "small",
     srcs = [
         "test.go",
-        ":in",
+        ":foo",
+        ":bar",
     ],
     data = [
-        "out.go",
-        ":in",
+        "foo_out.go",
+        "bar_out.go",
+        ":foo",
+        ":bar",
     ],
 )
