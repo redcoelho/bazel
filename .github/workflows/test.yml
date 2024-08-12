@@ -1,14 +1,18 @@
 name: Test
-
 on:
   push:
-
 jobs:
   Test:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout Code
         uses: actions/checkout@v4
-      - name: Test
+      - name: Run Test
         run: |
           bazel test //...
+      - name: Publish test Results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          files: |
+            bazel-testlogs/**/*.xml
