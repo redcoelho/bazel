@@ -7,9 +7,17 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+
+      - name: Cache Bazel
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/bazel
+          key: ${{ runner.os }}-bazel-cache-${{ hashFiles('MODULE.bazel') }}
+
       - name: Run Test
         run: |
           bazel test //...
+
       - name: Publish test Results
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: always()
