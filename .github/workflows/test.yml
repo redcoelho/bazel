@@ -1,4 +1,7 @@
 name: Test
+permissions:
+  checks: write
+  pull-requests: write
 on:
   push:
 jobs:
@@ -15,12 +18,10 @@ jobs:
           key: ${{ runner.os }}-bazel-cache-${{ hashFiles('MODULE.bazel') }}
 
       - name: Run Test
-        run: |
-          bazel test //...
+        run: bazel test //...
 
       - name: Publish test Results
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: always()
         with:
-          files: |
-            bazel-testlogs/**/*.xml
+          files: bazel-testlogs/**/*.xml
