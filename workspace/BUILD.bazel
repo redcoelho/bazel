@@ -1,0 +1,6 @@
+load(":def.bzl", "workspace_path")
+
+workspace_path(
+    name = "workspace",
+    visibility = ["//godump:__subpackages__"],
+)
