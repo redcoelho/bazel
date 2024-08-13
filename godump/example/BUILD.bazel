@@ -1,0 +1,54 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+load("//godump:def.bzl", "go_dump")
+load(":def.bzl", "go_fake_dir")
+
+genrule(
+    name = "fake_workspace",
+    testonly = True,
+    outs = ["fake_workspace.txt"],
+    cmd_bash = "echo '/path/to/workspace' >$@",
+)
+
+genrule(
+    name = "foo",
+    testonly = True,
+    outs = ["foo.go"],
+    cmd_bash = "echo 'package main\n\nconst foo = 1' >$@",
+)
+
+go_fake_dir(
+    name = "bar",
+    testonly = True,
+)
+
+go_library(
+    name = "example",
+    testonly = True,
+    srcs = [
+        ":bar",
+        ":foo",
+    ],
+)
+
+go_dump(
+    name = "dump",
+    testonly = True,
+    srcs = [":example"],
+    workspace = "//workspace",
+)
+
+go_dump(
+    name = "test_dump",
+    testonly = True,
+    srcs = [":example"],
+    workspace = ":fake_workspace",
+)
+
+go_test(
+    name = "test",
+    srcs = ["test.go"],
+    data = [
+        "out.sh",
+        ":test_dump",
+    ],
+)
